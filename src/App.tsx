@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import FetchData from "./Components/FetchData";
+import Image from "./Components/Image";
 import './App.css';
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
 
     return (
     <div className="App">
-      <FetchData endpoint = "http://localhost:8080/anime/1" onDataFetched={handleDataFetched}/>
+      <Image endpoint = "http://localhost:8080/characters/3/pictures" onDataFetched={handleDataFetched}/>
     </div>
     );
 }
