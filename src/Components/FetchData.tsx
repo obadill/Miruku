@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
-const FetchData = () => {
-    const [data, setData] = useState(null);
+interface FetchDataProps {
+    endpoint: string;
+    onDataFetched: (data: any) => void;  // callback prop to pass data to parent
+}
+
+const FetchData: React.FC<FetchDataProps> = ({ endpoint, onDataFetched }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-       fetch("http://localhost:8080/anime/1")
+       fetch(endpoint)
            .then((response) => {
               if (!response.ok) {
                   throw new Error("Network response was not ok");
@@ -14,24 +18,19 @@ const FetchData = () => {
               return response.json()
            })
            .then((data) => {
-               setData(data);
+               onDataFetched(data); // pass the fetched data up to the parent
                setLoading(false);
            })
            .catch((error) => {
               setError(error.message);
               setLoading(false);
            });
-    }, []);
+    }, []); // re-fetch if endpoint or callback changes
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
-    return (
-        <div>
-            <h1>Fetched Data</h1>
-            <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
-    );
+    return null;
 };
 
 export default FetchData;
