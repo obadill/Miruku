@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { fetchDataFromApi } from '../Api/api';
+import { fetchDataFromApi } from '../../Api/api';
 
 interface FetchDataProps {
     endpoint: string;
     onDataFetched: (data: any) => void;
 }
 
-const Image: React.FC<FetchDataProps> = ({ endpoint, onDataFetched }) => {
+const AnimeImage: React.FC<FetchDataProps> = ({ endpoint, onDataFetched }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -15,7 +15,7 @@ const Image: React.FC<FetchDataProps> = ({ endpoint, onDataFetched }) => {
         const fetchData = async () => {
             try {
                 const data = await fetchDataFromApi(endpoint);
-                const imageUrl = data?.data?.[0]?.jpg?.image_url;
+                const imageUrl = data?.data?.[1]?.jpg?.image_url;
                 if (imageUrl) {
                     setImageUrl(imageUrl);
                     onDataFetched(data);
@@ -35,4 +35,4 @@ const Image: React.FC<FetchDataProps> = ({ endpoint, onDataFetched }) => {
     return <>{imageUrl && <img src={imageUrl} alt="Anime Character" />}</>;
 };
 
-export default Image;
+export default AnimeImage;
