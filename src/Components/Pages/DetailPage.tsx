@@ -9,7 +9,7 @@ const DetailPage = () => {
     const { mal_id, title } = useParams();  // destructures the parameters from URL
     return (
         <div>
-
+            {title}
         </div>
     )
 }
