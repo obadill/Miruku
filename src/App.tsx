@@ -5,14 +5,16 @@ import SignIn from "./Components/UserAuth/SignIn";
 import './App.css';
 import Register from "./Components/UserAuth/Register";
 import Layout from "./Components/Layout";
+import DetailPage from "./Components/Pages/DetailPage";
 
 
 function App() {
+    const [loggedIn, setLoggedIn] = useState(false);
 
     const router = createBrowserRouter([
         {
             path: "/",
-            element: <Layout />,
+            element: <Layout loggedIn={loggedIn} setLoggedIn={setLoggedIn} />,
             children: [
                 {
                   path: "/",
@@ -20,12 +22,16 @@ function App() {
                 },
                 {
                     path: "/login",
-                    element: <SignIn />,
+                    element: <SignIn loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>,
                 },
                 {
                     path: "/register",
                     element: <Register />,
                 },
+                {
+                    path: "anime/:mal_id/:title",
+                    element: <DetailPage />
+                }
             ]
         },
     ]);

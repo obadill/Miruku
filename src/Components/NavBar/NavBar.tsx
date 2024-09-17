@@ -1,7 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { auth } from "../../Firebase/firebase";
 
-const NavBar = () => {
+interface NavBarProps {
+    loggedIn: boolean,
+    setLoggedIn: (value: boolean) => void;
+}
+
+const NavBar: React.FC<NavBarProps> = ({loggedIn, setLoggedIn}) => {
     const navigate = useNavigate();
 
     const routeSignIn = () => {
@@ -19,8 +25,14 @@ const NavBar = () => {
     return (
         <div>
             <img className="logo" onClick={routeHome} src="/assets/mirukuLogo.png" alt="miruku logo" />
-            <button onClick={routeSignIn}>Sign in</button>
-            <button onClick={routeRegister}>Sign up</button>
+            {loggedIn
+                ? <button>{auth.currentUser?.email}</button>
+                :
+                <>
+                    <button onClick={routeSignIn}>Sign in</button>
+                    <button onClick={routeRegister}>Sign up</button>
+                </>
+            }
         </div>
     )
 }
