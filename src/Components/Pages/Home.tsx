@@ -9,6 +9,13 @@ import Loading from "./Loading";
 type Anime = {
     mal_id: number;
     title: string;
+    images: {
+        jpg: {
+            image_url: string;
+            large_image_url: string;
+            small_image_url: string;
+        };
+    };
 };
 
 const Home: React.FC = () => {
@@ -25,6 +32,7 @@ const Home: React.FC = () => {
                 if (response && response.data) {
                     setAiringData(response.data); // Correctly set airing data
                     setLoading(false);
+                    console.log(response);
                 } else {
                     console.error("No data found");
                 }
@@ -47,14 +55,19 @@ const Home: React.FC = () => {
                 <div>
                     <h1>Home page</h1>
                     <ul>
-                        {airingData.map((anime) => (
-                            <li key={anime.mal_id}>
-                                <button onClick={() => handleAnimeClick(anime.mal_id, anime.title)}>
-                                    {anime.title}
-                                </button>
+                        {airingData.map((anime, index) => (
+                            <li key={anime.mal_id} style={{listStyleType: 'none', marginBottom: '20px'}}>
+                                <img
+                                    src={anime.images.jpg.image_url}
+                                    alt={anime.title}
+                                    style={{cursor: 'pointer', maxWidth: '200px', borderRadius: '8px'}}
+                                    onClick={() => handleAnimeClick(anime.mal_id, anime.title)}
+                                />
+                                <p>{index + 1}. {anime.title}</p>
                             </li>
                         ))}
                     </ul>
+
                 </div>
             )}
         </div>
