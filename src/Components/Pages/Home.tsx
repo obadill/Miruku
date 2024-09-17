@@ -1,19 +1,22 @@
-// Home.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchDataFromApi } from "../../Api/api";
+import { ring } from 'ldrs';
+import Loading from "./Loading";
 
-// Define a type for the anime data
+
+// anime data type
 type Anime = {
     mal_id: number;
     title: string;
-    // Add other fields as necessary
 };
 
 const Home: React.FC = () => {
     const navigate = useNavigate();
     const [airingData, setAiringData] = useState<Anime[]>([]); // Initialize with an empty array
     const [loading, setLoading] = useState<boolean>(true);
+
+    ring.register();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -38,19 +41,21 @@ const Home: React.FC = () => {
 
     return (
         <div>
-            <h1>Home page</h1>
             {loading ? (
-                <p>Loading...</p>
+                <Loading />
             ) : (
-                <ul>
-                    {airingData.map((anime) => (
-                        <li key={anime.mal_id}>
-                            <button onClick={() => handleAnimeClick(anime.mal_id, anime.title)}>
-                                {anime.title}
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+                <div>
+                    <h1>Home page</h1>
+                    <ul>
+                        {airingData.map((anime) => (
+                            <li key={anime.mal_id}>
+                                <button onClick={() => handleAnimeClick(anime.mal_id, anime.title)}>
+                                    {anime.title}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             )}
         </div>
     );

@@ -15,3 +15,10 @@ code {
 button, .logo {
   cursor: pointer;
 }
+
+.loading {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+  min-height: 70vh;
+}
