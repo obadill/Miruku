@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from 'react-router-dom';
 import { auth } from "../../Firebase/firebase";
 
-const SignIn = () => {
+interface SignInProps {
+    loggedIn: boolean,
+    setLoggedIn: (value: boolean) => void;
+}
+
+const SignIn: React.FC<SignInProps> = ({ loggedIn, setLoggedIn }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
-    // const navigate = useNavigate();
 
     const handleSignIn = async (e: any) => {
         e.preventDefault();
@@ -15,6 +17,7 @@ const SignIn = () => {
             await signInWithEmailAndPassword(auth, email, password);
             // route user to home page while logged in
             // navigate("/home");
+            setLoggedIn(true);
             console.log("hello world");
         } catch (e: any) {
             console.log("Incorrect email or password");

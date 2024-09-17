@@ -1,10 +1,15 @@
 import { Outlet } from 'react-router-dom';
 import NavBar from "./NavBar/NavBar";
 
-const Layout = () => {
+interface LayoutProps {
+    loggedIn: boolean,
+    setLoggedIn: (value: boolean) => void;
+}
+
+const Layout: React.FC<LayoutProps> = ({loggedIn, setLoggedIn}) => {
     return (
         <div>
-            <NavBar />
+            <NavBar loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
             <Outlet /> {/* This renders the matched route's component */}
         </div>
     );
