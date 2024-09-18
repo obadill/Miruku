@@ -18,7 +18,6 @@ const DetailPage = () => {
                 if (response) {
                     setAnimeData(response);
                     setLoading(false);
-                    console.log(response);
                 } else {
                     console.error("No data found");
                 }

@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from "../../Firebase/firebase";
-import SearchBar from "../SearchBar/SearchBar";
 import Logo from "./Logo.svg";
 
 interface NavBarProps {
@@ -26,25 +25,32 @@ const NavBar: React.FC<NavBarProps> = ({loggedIn, setLoggedIn}) => {
         navigate("/");
     }
 
+    const routeBrowse = () => {
+        navigate("/browse");
+    }
+
+    const routeAbout = () => {
+        navigate("/about");
+    }
+
+
     return (
         <div className="navbar">
-            <div className="logo-search">
+            <div className="logo-and-buttons">
                 <img className="logo" src={Logo} alt="logo" onClick={routeHome}/>
-                <div className="search-bar-container">
-                    <SearchBar query={query} setQuery={setQuery} />
-                </div>
+                <button className="black-nav-button nav-buttons" onClick={routeBrowse}>Browse</button>
+                <button className="black-nav-button nav-buttons" onClick={routeAbout}>About</button>
             </div>
             {loggedIn ? (
-                <button>{auth.currentUser?.email}</button>
+                <button className="nav-buttons primary-nav-button">{auth.currentUser?.email}</button>
             ) : (
                 <div className="user-auth">
-                    <p onClick={routeSignIn}>Login</p>
-                    <button onClick={routeRegister}>Sign up</button>
+                    <button className="black-nav-button nav-buttons" onClick={routeSignIn}>Login</button>
+                    <button className="primary-nav-button nav-buttons" onClick={routeRegister}>Sign up</button>
                 </div>
             )}
         </div>
     );
-
 }
 
 export default NavBar;

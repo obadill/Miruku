@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { fetchDataFromApi } from "../../Api/api";
 import { ring } from 'ldrs';
 import Loading from "./Loading";
+import SearchBar from "../SearchBar/SearchBar";
+import AnimeCardContainer from "../AnimeCardContainer/AnimeCardContainer";
 
 
 // anime data type
@@ -18,26 +20,58 @@ type Anime = {
     };
 };
 
+type CachedAnimeData = {
+    data: Anime[];
+    timestamp: number;
+}
+
 const Home: React.FC = () => {
-    const navigate = useNavigate();
-    const [airingData, setAiringData] = useState<Anime[]>([]); // Initialize with an empty array
+    // state variables
+    const [airingData, setAiringData] = useState<CachedAnimeData>(JSON.parse(localStorage.getItem('airingData') || '[]'));
+    const [trendingData, setTrendingData] = useState<CachedAnimeData>(JSON.parse(localStorage.getItem('trendingData') || '[]'));
+    const [upcomingData, setUpcomingData] = useState<CachedAnimeData>(JSON.parse(localStorage.getItem('upcomingData') || '[]'));
     const [loading, setLoading] = useState<boolean>(true);
+    const [query, setQuery] = useState("");
+
+    const navigate = useNavigate();
 
     ring.register();
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await fetchDataFromApi("https://api.jikan.moe/v4/seasons/now");
-                if (response && response.data) {
-                    setAiringData(response.data); // Correctly set airing data
+            const cacheExpiry = 24 * 60 * 60 * 1000;
+            const now = Date.now();
+
+            const trendingDataCached: CachedAnimeData | null = JSON.parse(localStorage.getItem('trendingData') || 'null');
+
+            const isTrendingExpired = trendingDataCached && (now - trendingDataCached.timestamp > cacheExpiry);
+
+            if (isTrendingExpired || trendingDataCached?.timestamp == null) {
+                try {
+                    const trendingResponse = await fetchDataFromApi("https://api.jikan.moe/v4/top/anime?filter=airing");
+                    const airingResponse = await fetchDataFromApi("https://api.jikan.moe/v4/seasons/now");
+                    const upcomingResponse = await fetchDataFromApi("https://api.jikan.moe/v4/seasons/upcoming");
+                    
+                    const cachedTrendingData = { data: trendingResponse, timestamp: now };
+                    localStorage.setItem('trendingData', JSON.stringify(cachedTrendingData));
+                    setTrendingData(cachedTrendingData);
+
+                    const cachedAiringData = { data: airingResponse, timestamp: now };
+                    localStorage.setItem('airingData', JSON.stringify(cachedAiringData));
+                    setAiringData(cachedAiringData);
+
+                    const cachedUpcomingData = { data: upcomingResponse, timestamp: now };
+                    localStorage.setItem('upcomingData', JSON.stringify(cachedUpcomingData));
+                    setUpcomingData(cachedUpcomingData);
+                } catch (err: any) {
+                    console.error("Error fetching trending data:", err.message);
+                } finally {
                     setLoading(false);
-                    console.log(response);
-                } else {
-                    console.error("No data found");
                 }
-            } catch (err: any) {
-                console.error(err.message);
+            } else if (trendingDataCached) {
+                // Use cached data
+                setTrendingData(trendingDataCached);
+                setLoading(false);
             }
         };
         fetchData();
@@ -48,27 +82,28 @@ const Home: React.FC = () => {
     };
 
     return (
-        <div>
-            {/*{loading ? (*/}
-            {/*    <Loading />*/}
-            {/*) : (*/}
-            {/*    <div>*/}
-            {/*        <h1>Home page</h1>*/}
-            {/*        <ul>*/}
-            {/*            {airingData.map((anime, index) => (*/}
-            {/*                <li key={anime.mal_id} style={{listStyleType: 'none', marginBottom: '20px'}}>*/}
-            {/*                    <img*/}
-            {/*                        src={anime.images.jpg.image_url}*/}
-            {/*                        alt={anime.title}*/}
-            {/*                        style={{cursor: 'pointer', maxWidth: '200px', borderRadius: '8px'}}*/}
-            {/*                        onClick={() => handleAnimeClick(anime.mal_id, anime.title)}*/}
-            {/*                    />*/}
-            {/*                </li>*/}
-            {/*            ))}*/}
-            {/*        </ul>*/}
-
-            {/*    </div>*/}
-            {/*)}*/}
+        <div className="home-container">
+            <div className="search-container">
+                <p className="search-text">Peak awaits.</p>
+                <SearchBar query={query} setQuery={setQuery}/>
+            </div>
+            <div className="anime-cards">
+                {loading ? (
+                    <Loading />
+                ) : (
+                    <>
+                        <div className="trending">
+                            <AnimeCardContainer data={trendingData} />
+                        </div>
+                        <div className="this-season">
+                            <AnimeCardContainer data={airingData} />
+                        </div>
+                        <div className="Upcoming">
+                            <AnimeCardContainer data={upcomingData} />
+                        </div>
+                    </>
+                )}
+            </div>
         </div>
     );
 };

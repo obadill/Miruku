@@ -6,6 +6,8 @@ import './App.css';
 import Register from "./Components/UserAuth/Register";
 import Layout from "./Components/Layout";
 import DetailPage from "./Components/Pages/DetailPage";
+import BrowsePage from "./Components/Pages/BrowsePage";
+import AboutPage from "./Components/Pages/AboutPage";
 
 
 function App() {
@@ -31,6 +33,14 @@ function App() {
                 {
                     path: "anime/:mal_id/:title",
                     element: <DetailPage />
+                },
+                {
+                    path: "/browse",
+                    element: <BrowsePage />
+                },
+                {
+                    path: "/about",
+                    element: <AboutPage />
                 }
             ]
         },
