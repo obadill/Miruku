@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { fetchDataFromApi } from "../../Api/api";
 import { ring } from 'ldrs';
 import Loading from "./Loading";
@@ -20,6 +19,7 @@ type Anime = {
     };
 };
 
+// cached anime data type with the timestamp
 type CachedAnimeData = {
     data: Anime[];
     timestamp: number;
@@ -33,13 +33,11 @@ const Home: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [query, setQuery] = useState("");
 
-    const navigate = useNavigate();
-
     ring.register();
 
     useEffect(() => {
         const fetchData = async () => {
-            const cacheExpiry = 24 * 60 * 60 * 1000;
+            const cacheExpiry = 86400000;
             const now = Date.now();
 
             const trendingDataCached: CachedAnimeData | null = JSON.parse(localStorage.getItem('trendingData') || 'null');
@@ -69,17 +67,12 @@ const Home: React.FC = () => {
                     setLoading(false);
                 }
             } else if (trendingDataCached) {
-                // Use cached data
                 setTrendingData(trendingDataCached);
                 setLoading(false);
             }
         };
         fetchData();
     }, []);
-
-    const handleAnimeClick = (mal_id: number, title: string) => {
-        navigate(`/anime/${mal_id}/${encodeURIComponent(title)}`);
-    };
 
     return (
         <div className="home-container">
