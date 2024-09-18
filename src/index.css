@@ -1,8 +1,5 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -16,9 +13,54 @@ button, .logo {
   cursor: pointer;
 }
 
+button, body, ::placeholder {
+  font-family: "Outfit", sans-serif;
+}
+
 .loading {
   display: flex;
-  justify-content: center; /* Centers horizontally */
-  align-items: center; /* Centers vertically */
+  justify-content: center;
+  align-items: center;
   min-height: 70vh;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 134px;
+  background: #C8D9EE;
+  position: sticky;
+  top: 0;
+  height: 6vh;
+}
+
+.miruku-logo {
+  color: #000;
+  font-size: 42px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.logo-search {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-grow: 1;
+}
+
+.search-bar-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+input:focus {
+  outline: none;
+}
+
+.user-auth {
+  display: flex;
+  gap: 1em;
 }

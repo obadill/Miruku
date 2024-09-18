@@ -10,6 +10,8 @@
     "@types/node": "^16.18.108",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
+    "@yext/search-headless-react": "^2.5.0-beta.5",
+    "@yext/search-ui-react": "^1.7.0-beta.8",
     "axios": "^1.7.7",
     "axios-rate-limit": "^1.4.0",
     "bootstrap": "^5.3.3",

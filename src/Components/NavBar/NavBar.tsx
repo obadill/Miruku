@@ -1,6 +1,8 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from "../../Firebase/firebase";
+import SearchBar from "../SearchBar/SearchBar";
+import Logo from "./Logo.svg";
 
 interface NavBarProps {
     loggedIn: boolean,
@@ -8,6 +10,8 @@ interface NavBarProps {
 }
 
 const NavBar: React.FC<NavBarProps> = ({loggedIn, setLoggedIn}) => {
+    const [query, setQuery] = useState("");
+
     const navigate = useNavigate();
 
     const routeSignIn = () => {
@@ -23,18 +27,24 @@ const NavBar: React.FC<NavBarProps> = ({loggedIn, setLoggedIn}) => {
     }
 
     return (
-        <div>
-            <img className="logo" onClick={routeHome} src="/assets/mirukuLogo.png" alt="miruku logo" />
-            {loggedIn
-                ? <button>{auth.currentUser?.email}</button>
-                :
-                <>
-                    <button onClick={routeSignIn}>Sign in</button>
+        <div className="navbar">
+            <div className="logo-search">
+                <img className="logo" src={Logo} alt="logo" onClick={routeHome}/>
+                <div className="search-bar-container">
+                    <SearchBar query={query} setQuery={setQuery} />
+                </div>
+            </div>
+            {loggedIn ? (
+                <button>{auth.currentUser?.email}</button>
+            ) : (
+                <div className="user-auth">
+                    <p onClick={routeSignIn}>Login</p>
                     <button onClick={routeRegister}>Sign up</button>
-                </>
-            }
+                </div>
+            )}
         </div>
-    )
+    );
+
 }
 
 export default NavBar;
