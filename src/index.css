@@ -1,0 +1,111 @@
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+button, .logo {
+  cursor: pointer;
+}
+
+button, body, ::placeholder {
+  font-family: "Outfit", sans-serif;
+}
+
+::placeholder {
+  font-size: 1.250rem;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 134px;
+  background: #000;
+  height: 8vh;
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3.812rem;
+}
+
+.search-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.miruku-logo {
+  color: #000;
+  font-size: 42px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.logo-and-buttons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-grow: 1;
+}
+
+.search-bar-container {
+  border-style: solid;
+  border: 1px solid #000;
+  width: 27.125rem;
+}
+
+input:focus {
+  outline: none;
+}
+
+.user-auth {
+  display: flex;
+  gap: 1em;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.primary-nav-button {
+  border-radius: 8px;
+  background: #FFF;
+  font-size: 1.250rem;
+}
+
+.black-nav-button {
+  font-size: 20px;
+  color: white;
+  background: black;
+}
+
+.black-nav-button, .primary-nav-button {
+  border-style: solid;
+}
+
+.search-text {
+  font-size: 2.438rem;
+}
