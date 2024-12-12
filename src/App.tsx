@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./Components/Pages/Home";
 import SignIn from "./Components/UserAuth/SignIn";
@@ -6,12 +6,21 @@ import './App.css';
 import Register from "./Components/UserAuth/Register";
 import Layout from "./Components/Layout";
 import DetailPage from "./Components/Pages/DetailPage";
-import BrowsePage from "./Components/Pages/BrowsePage";
-import AboutPage from "./Components/Pages/AboutPage";
+import ErrorPage from './Components/Pages/ErrorPage';
+import Profile from "./Components/Pages/Profile";
+import Browse from './Components/Pages/Browse';
+import AnimeList from './Components/Pages/AnimeList';
 
 
 function App() {
     const [loggedIn, setLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const checkLoggedIn = localStorage.getItem("isLoggedIn");
+        if (checkLoggedIn === "true") {
+            setLoggedIn(true);
+        }
+    }, []);
 
     const router = createBrowserRouter([
         {
@@ -24,24 +33,32 @@ function App() {
                 },
                 {
                     path: "/login",
-                    element: <SignIn loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>,
+                    element: <SignIn setLoggedIn={setLoggedIn}/>,
                 },
                 {
                     path: "/register",
                     element: <Register />,
                 },
                 {
-                    path: "anime/:mal_id/:title",
+                    path: "/anime/:title",
                     element: <DetailPage />
                 },
                 {
                     path: "/browse",
-                    element: <BrowsePage />
+                    element: <Browse />
                 },
                 {
-                    path: "/about",
-                    element: <AboutPage />
-                }
+                    path: "/profile/:uid",
+                    element: <Profile />,
+                },
+                {
+                    path: "/animelist/:uid",
+                    element: <AnimeList />,
+                },
+                {
+                    path: "/404",
+                    element: <ErrorPage />
+                },
             ]
         },
     ]);

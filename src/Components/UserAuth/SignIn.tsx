@@ -1,65 +1,70 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../Firebase/firebase";
+import logo from "../../Assets/MilkBud.svg"
+
 
 interface SignInProps {
-    loggedIn: boolean,
     setLoggedIn: (value: boolean) => void;
 }
 
-const SignIn: React.FC<SignInProps> = ({ loggedIn, setLoggedIn }) => {
+const SignIn: React.FC<SignInProps> = ({ setLoggedIn }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
     const navigate = useNavigate();
 
-    const handleSignIn = async (e: any) => {
+    useEffect(() => {
+        const isLogged = localStorage.getItem("isLoggedIn") === "true";
+        setLoggedIn(isLogged);
+        if (isLogged) navigate("/");
+    }, [setLoggedIn, navigate]);
+
+    const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            // route user to home page while logged in
-            // navigate("/home");
             setLoggedIn(true);
+            localStorage.setItem("isLoggedIn", "true");
             navigate("/");
-        } catch (e: any) {
-            console.log("Incorrect email or password");
-            console.log(e.message);
+        } catch (error: any) {
+            console.error(error.message);
+            localStorage.removeItem("isLoggedIn");
+            navigate("/404");
         }
     }
 
     return (
-        <form onSubmit={handleSignIn}>
-            <h3>Login</h3>
+        <div className="formContainer">
+            <form className="contentContainer" onSubmit={handleSignIn}>
+                <div className="left">
+                    <img src={logo} alt="Happy Milkbud" height={150} width={150}/>
+                    <h3 className="header">Login</h3>
+                </div>
+                <div className="divider"></div>
+                <div className="right">
+                    <div className="innerText">
+                        <label>Email address</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
 
-            <div>
-                <label>Email address</label>
-                <input
-                    type="email"
-                    placeholder="Enter email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-            </div>
+                    <div className="innerText">
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
 
-            <div>
-                <label>Password</label>
-                <input
-                    type="password"
-                    placeholder="Enter password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-            </div>
-
-            <div className="d-grid">
-                <button type="submit" className="btn btn-primary">
-                    Log in
-                </button>
-            </div>
-        </form>
+                    <button type="submit" className="authButton">Login</button>
+                </div>
+            </form>
+        </div>
     )
 };
 

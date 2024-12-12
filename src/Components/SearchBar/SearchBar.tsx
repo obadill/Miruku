@@ -1,5 +1,5 @@
 import React from 'react';
-import searchLogo from "./Search.svg";
+import searchLogo from "../../Assets/Search.svg"
 import useSearch from "../../Hooks/useSearch";
 
 interface SearchBarProps {

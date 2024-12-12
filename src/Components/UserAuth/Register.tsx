@@ -1,85 +1,82 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { auth, db } from "../../Firebase/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 import { setDoc, doc } from "firebase/firestore";
+import logo from "../../Assets/MilkBud.svg"
+
+interface UserDocument {
+    email: string;
+    username: string;
+}
 
 const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [fname, setFname] = useState("");
-    const [lname, setLname] = useState("");
+    const [username, setUsername] = useState("");
+    const navigate = useNavigate();
+
 
     const handleRegister = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         try {
             await createUserWithEmailAndPassword(auth, email, password)
             const user = auth.currentUser;
-            if (user) {
-                await setDoc(doc(db, "Users", user.uid), {
+            if (user && user.email) {
+                const userDoc: UserDocument = {
                     email: user.email,
-                    firstName: fname,
-                    lastName: lname,
-                });
+                    username: username,
+                };
+                await setDoc(doc(db, "Users", user.uid), userDoc);
+                navigate("/login");
             }
-            console.log("user is registered successfully");
-        } catch (error) {
-            // @ts-ignore
-            console.log(error.message);
+        } catch (e: any) {
+            console.error(e.message);
+            navigate("/404");
         }
     }
 
     return (
-        <form onSubmit={handleRegister}>
-            <h3>Sign Up</h3>
+        <div className="formContainer">
+            <form className="contentContainer" onSubmit={handleRegister}>
+                <div className="left">
+                    <img src={logo} alt="Happy Milkbud" height={150} width={150}/>
+                    <h3 className="header">Sign Up</h3>
+                </div>
+                <div className="divider"></div>
+                <div className="right">
+                    <div className="innerText">
+                        <label>Username</label>
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
 
-            <div>
-                <label>First name</label>
-                <input
-                    type="text"
-                    placeholder="First name"
-                    value={fname}
-                    onChange={(e) => setFname(e.target.value)}
-                    required
-                />
-            </div>
+                    <div className="innerText">
+                        <label>Email address</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
 
-            <div>
-                <label>Last name</label>
-                <input
-                    type="text"
-                    placeholder="Last name"
-                    value={lname}
-                    onChange={(e) => setLname(e.target.value)}
-                    required
-                />
-            </div>
+                    <div className="innerText">
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
 
-            <div>
-                <label>Email address</label>
-                <input
-                    type="email"
-                    placeholder="Enter email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-            </div>
-
-            <div>
-                <label>Password</label>
-                <input
-                    type="password"
-                    placeholder="Enter password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-            </div>
-
-            <div className="d-grid">
-                <button type="submit" className="btn btn-primary">
-                    Sign Up
-                </button>
-            </div>
-        </form>
+                    <button type="submit"className="authButton">Sign Up</button>
+                </div>
+            </form>
+        </div>
     )
 };
 

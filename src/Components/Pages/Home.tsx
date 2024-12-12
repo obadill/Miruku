@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchDataFromApi } from "../../Api/api";
 import { ring } from 'ldrs';
 import Loading from "./Loading";
 import SearchBar from "../SearchBar/SearchBar";
-import AnimeCardContainer from "../AnimeCardContainer/AnimeCardContainer";
+import BrowsePreview from "../Elements/BrowsePreview";
+import "../../Home.css";
 
-
-// anime data type
 type Anime = {
     mal_id: number;
     title: string;
@@ -19,14 +18,12 @@ type Anime = {
     };
 };
 
-// cached anime data type with the timestamp
 type CachedAnimeData = {
     data: Anime[];
     timestamp: number;
 }
 
 const Home: React.FC = () => {
-    // state variables
     const [airingData, setAiringData] = useState<CachedAnimeData>(JSON.parse(localStorage.getItem('airingData') || '[]'));
     const [trendingData, setTrendingData] = useState<CachedAnimeData>(JSON.parse(localStorage.getItem('trendingData') || '[]'));
     const [upcomingData, setUpcomingData] = useState<CachedAnimeData>(JSON.parse(localStorage.getItem('upcomingData') || '[]'));
@@ -46,10 +43,10 @@ const Home: React.FC = () => {
 
             if (isTrendingExpired || trendingDataCached?.timestamp == null) {
                 try {
-                    const trendingResponse = await fetchDataFromApi("https://api.jikan.moe/v4/top/anime?filter=airing");
-                    const airingResponse = await fetchDataFromApi("https://api.jikan.moe/v4/seasons/now");
-                    const upcomingResponse = await fetchDataFromApi("https://api.jikan.moe/v4/seasons/upcoming");
-                    
+                    const trendingResponse = await fetchDataFromApi("anime?filter=airing");
+                    const airingResponse = await fetchDataFromApi("seasons/now");
+                    const upcomingResponse = await fetchDataFromApi("seasons/upcoming");
+
                     const cachedTrendingData = { data: trendingResponse, timestamp: now };
                     localStorage.setItem('trendingData', JSON.stringify(cachedTrendingData));
                     setTrendingData(cachedTrendingData);
@@ -61,8 +58,8 @@ const Home: React.FC = () => {
                     const cachedUpcomingData = { data: upcomingResponse, timestamp: now };
                     localStorage.setItem('upcomingData', JSON.stringify(cachedUpcomingData));
                     setUpcomingData(cachedUpcomingData);
-                } catch (err: any) {
-                    console.error("Error fetching trending data:", err.message);
+                } catch (e: any) {
+                    console.error(e.message);
                 } finally {
                     setLoading(false);
                 }
@@ -74,26 +71,22 @@ const Home: React.FC = () => {
         fetchData();
     }, []);
 
+    
+
     return (
         <div className="home-container">
             <div className="search-container">
                 <p className="search-text">Peak awaits.</p>
                 <SearchBar query={query} setQuery={setQuery}/>
             </div>
-            <div className="anime-cards">
+            <div className="previewContainer">
                 {loading ? (
                     <Loading />
                 ) : (
                     <>
-                        <div className="trending">
-                            <AnimeCardContainer data={trendingData} />
-                        </div>
-                        <div className="this-season">
-                            <AnimeCardContainer data={airingData} />
-                        </div>
-                        <div className="Upcoming">
-                            <AnimeCardContainer data={upcomingData} />
-                        </div>
+                        <BrowsePreview data={airingData} limit={6} label={"This Season"}/>
+                        <BrowsePreview data={upcomingData } limit={6} label={"Upcoming"}/>
+                        <BrowsePreview data={trendingData} limit={6} label={"Classics"}/>
                     </>
                 )}
             </div>
